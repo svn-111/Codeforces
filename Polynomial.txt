@@ -1,0 +1,179 @@
+//ploy
+
+#include<bits/stdc++.h>
+using namespace std;
+double x[100],y[100],xx[100],yy[100],solve[100],a[100][100];
+int n,N=3;
+
+double summation(double arr[], int power, int n)
+{
+
+    double result = 0, res[100];
+
+    for(int i = 0; i < n; i++)
+    {
+
+        res[i] = pow(arr[i], power);
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+
+        result += res[i];
+    }
+
+    return result;
+}
+
+double* XY(double x[], double y[],int power, int n)
+{
+
+    static double xy[100], powX[100];
+
+    for(int i = 0; i < n; i++)
+    {
+
+        powX[i] = pow(x[i], power);
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+
+        xy[i] = powX[i] * y[i];
+    }
+
+    return xy;
+}
+
+double correlation(double x[], double y[], int n)
+{
+
+    double R;
+
+    R = ((n * summation(XY(x, y, 1, n), 1, n)) - (summation(x, 1, n) * summation(y, 1, n))) / (sqrt(((n * summation(x, 2, n)) - pow(summation(x, 1, n), 2)) * ((n * summation(y, 2, n)) - pow(summation(y, 1, n), 2))));
+
+    printf("Correlation Coefficient R\t %lf",R);
+    return R;
+}
+void gaussElimination(int m,int n)
+{
+    int i,j,k;
+    for(i=0; i<m-1; i++)
+    {
+        for(k=i+1; k<m; k++)
+        {
+            if(fabs(a[i][i])<fabs(a[k][i]))
+            {
+                for(j=0; j<n; j++)
+                {
+                    double temp;
+                    temp=a[i][j];
+                    a[i][j]=a[k][j];
+                    a[k][j]=temp;
+                }
+            }
+        }
+    }
+
+    for(k=i+1; k<m; k++)
+    {
+        double  term=a[k][i]/ a[i][i];
+        for(j=0; j<n; j++)
+        {
+            a[k][j]=a[k][j]-term*a[i][j];
+        }
+    }
+
+    for(i=m-1; i>=0; i--)
+    {
+        solve[i]=a[i][n-1];
+        for(j=i+1; j<n-1; j++)
+        {
+            solve[i]=solve[i]-a[i][j]*solve[j];
+        }
+        solve[i]=solve[i]/a[i][i];
+    }
+}
+void polynomialRegression()
+{
+    int i,j,k,c;
+    for (i=0; i<=2*N+1; i++)
+    {
+        xx[i]=0;
+        for (j=0; j<n; j++)
+            xx[i]=xx[i]+pow(x[j],i);
+    }
+    for (i=0; i<=N; i++)
+    {
+        yy[i]=0;
+        for (j=0; j<n; j++)
+            yy[i]=yy[i]+pow(x[j],i)*y[j];
+    }
+
+    for(i=0; i<=N; i++)
+    {
+        for(j=0; j<=N; j++)
+        {
+            a[i][j]=xx[i+j];
+        }
+    }
+
+    for(i=0; i<=N; i++)
+    {
+        a[i][N+1]=yy[i];
+    }
+
+    gaussElimination(N+1,N+2);
+
+    double value=2020;
+    cout<<"\nYear\t\t"<<"Temp"<<endl;
+    while(value<=2040)
+    {
+        double ans=solve[0]+(solve[1]*value)+(solve[2]*pow(value,2))+(solve[3]*pow(value,3));
+        cout<<value<<"\t\t"<<ans<<endl;
+        value=value+1;
+    }
+    cout<<"\nFunction\t\t"<<"Value"<<endl;
+    if(correlation(x, y, n) > 0)
+    {
+
+        printf("\n\nStrong positive relation.\n");
+
+    }
+
+    else if(correlation(x, y, n) < 0)
+    {
+
+        printf("\n\nStrong negative relation.\n");
+    }
+
+    else
+    {
+
+        printf("\n\nNo relationship at all.\n");
+    }
+
+
+    cout<<"A1\t\t"<<solve[0]<<endl;
+    cout<<"A2\t\t"<<solve[1]<<endl;
+    cout<<"A3\t\t"<<solve[2]<<endl;
+    cout<<"A4\t\t"<<solve[3]<<endl;
+}
+int main()
+{
+    cout<<fixed<<setprecision(6)<<endl;
+    int i,j;
+    cout<<"Enter number of Data : ";
+    cin>>n;
+    for(i=0; i<n; i++)
+    {
+        cin>>x[i];//>>y[i];
+    }
+
+    for(i=0; i<n; i++)
+    {
+        cin>>y[i];//>>y[i];
+    }
+    polynomialRegression();
+    return 0;
+}
