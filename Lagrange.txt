@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n,cnt=0;
+double x[100],y[100],approx_res[100];
+
+double productTerm(int i,double value)
+{
+    double pro=1;
+    int j;
+    for(j=0; j<n; j++)
+    {
+        if(i!=j)
+        {
+            pro=pro*((value-x[j])/(x[i]-x[j]));
+        }
+    }
+    return pro;
+}
+double applyFormula(double value)
+{
+    double sum=0;
+    int i,j;
+    for(i=0; i<n; i++)
+    {
+        sum=sum+(productTerm(i,value)*y[i]);
+    }
+    return sum;
+}
+int main()
+{
+    cout<<fixed<<setprecision(6)<<endl;
+    int i,j;
+    cout<<"Enter Number of Points :";
+    cin>>n;
+    for(i=0; i<n; i++)
+    {
+        cin>>x[i]>>y[i];
+    }
+    cout<<"Year\t\t\tApproximate Average Temperature in Degree Celsius "<<endl;
+    double approx_x,true_x;
+    double value=2020,h=1;
+    while(value<=2040)
+    {
+        approx_x=applyFormula(value);
+        approx_res[cnt]=approx_x;
+        cout<<value<<"\t\t"<<approx_x<<endl;
+        cnt++;
+        value=value+h;
+    }
+
+    cout<<"\nFunction\t\t\tValue"<<endl;
+    double sum=0;
+    for(i=0; i<n; i++)
+    {
+        sum=sum+pow((y[i]-approx_res[i]),2);
+    }
+    cout<<"Mean Squared Error (MSE)\t"<<sum<<endl;
+    cout<<"A0\t\t\t\t"<<y[0]<<endl;
+    cout<<"A1\t\t\t\t"<<y[1]<<endl;
+    cout<<"A2\t\t\t\t"<<y[2]<<endl;
+    cout<<"A3\t\t\t\t"<<y[3]<<endl;
+    return 0;
+}
