@@ -1,58 +1,27 @@
 #include<bits/stdc++.h>
-#define ll    long long int
 using namespace std;
-
 int main()
 {
-    int t,j;
+    int t;
     cin>>t;
-    for(j=1; j<=t; j++)
+    while(t--)
     {
-
-
-        ll e,m,n,mn,mx,avg,sum,cnt,x,y,z;
-        ll g[3];
-        for(int i=0; i<3; i++)
-            cin>>g[i];
-        cin>>x;
-
-        bool safe[3] = {true, true, true};
-
-        sum = g[0]+g[1]+g[2];
-        avg = sum/3;
-
-        for(int i=0; i<3 ; i++)
+        long long int n,i;
+        cin>>n;
+       long long int ar[n],br[n],sum1=0,sum2=0;
+        for(i=0;i<n;i++)
         {
-            if(sum % 3 != 0)
-            {
-                safe[0] = false;
-                break;
-            }
-            if(g[i] < avg)
-            {
-                g[i] = avg - g[i];
-                if(g[i] % x != 0)
-                {
-                    safe[i] = false;
-                    break;
-                }
-            }
-            if(g[i] > avg)
-            {
-                g[i] = g[i] - avg;
-                if(g[i] % x != 0)
-                {
-                    safe[i] = false;
-                    break;
-                }
-            }
+            cin>>ar[i];
+            br[i]=ar[i];
         }
-        if(safe[0] == true && safe[1]==true && safe[2] == true)
-        {
-            cout<<"Case "<<j<<": "<<"Peaceful"<<endl;
-        }
+        sort(ar,ar+n);
+        sort(br,br+n);
+        sum1=br[n-1]+br[n-2];
+        sum2=ar[0]+ar[1];
+        if(sum1>sum2)
+        cout<<"YES"<<endl;
         else
-            cout<<"Case "<<j<<": "<<"Fight"<<endl;
+            cout<<"NO"<<endl;
 
     }
 }
